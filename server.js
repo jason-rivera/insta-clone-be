@@ -5,6 +5,15 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 const mongoose = require('mongoose');
 const User = require('./models/user');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const bcryptjs = require('bcryptjs');
+
+//handles cors
+app.use(cors());
+
+//handles json body parsing for post requests
+app.use(bodyParser.json());
 
 // Connect to MongoDB
 mongoose
@@ -20,22 +29,37 @@ mongoose
   })
   .catch((err) => console.log(err));
 
-app.get('/add-user', (req, res) => {
-  const user = new User({
-    username: 'new user 4',
-    firstName: 'about my new user222',
-    lastName: 'more about my new user222',
-    email: 'my email222',
-    password: 'super secret password222',
-  });
-
-  user
-    .save()
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      res.send(err);
-      console.log(err);
+app.post('/add-user', async (req, res) => {
+  try {
+    const hashedPassword = await bcryptjs.hash(req.body.password, 10);
+    const newUser = await new User({
+      username: req.body.firstName,
+      firstName: req.body.lastName,
+      lastName: req.body.username,
+      email: req.body.email,
+      password: hashedPassword,
     });
+    const savedUser = await newUser.save();
+    res.status(200).json(savedUser);
+    console.log(savedUser);
+    console.log(`added ${savedUser.username} new user to the database`);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+app.get('/get-users', async (req, res) => {
+  const users = await User.find({});
+  console.log(users, 'displaying users from the server-database');
+});
+
+app.delete('/delete-all-users', async (req, res) => {
+  try {
+    await User.deleteMany({});
+    res.status(200).json({ message: 'deleted all users' });
+    console.log('deleted all users in database');
+  } catch (e) {
+    res.status(400).json({ message: 'unable to delete users in db' });
+    console.error(e);
+  }
 });
