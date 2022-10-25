@@ -8,6 +8,7 @@ const User = require('./models/user');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const bcryptjs = require('bcryptjs');
+const bcrypt = require('bcryptjs/dist/bcrypt');
 
 //handles cors
 app.use(cors());
@@ -61,5 +62,27 @@ app.delete('/delete-all-users', async (req, res) => {
   } catch (e) {
     res.status(400).json({ message: 'unable to delete users in db' });
     console.error(e);
+  }
+});
+
+app.post('/users/login', async (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+
+  const user = await User.find({ username: { $in: username } });
+
+  if (user === null) {
+    res.status(401).send();
+  }
+  console.log(user[0].email);
+
+  try {
+    if (await bcryptjs.compare(password, user[0].password)) {
+      res.status(200).send('success login!');
+    } else {
+      res.status(401).send();
+    }
+  } catch {
+    res.status(500).send();
   }
 });
