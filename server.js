@@ -65,9 +65,9 @@ app.post('/add-user', async (req, res) => {
   try {
     const hashedPassword = await bcryptjs.hash(req.body.password, 10);
     const newUser = await new User({
-      username: req.body.firstName,
-      firstName: req.body.lastName,
-      lastName: req.body.username,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      username: req.body.username,
       email: req.body.email,
       password: hashedPassword,
     });
