@@ -1,0 +1,35 @@
+### REQUIRES 'REST CLIENT' EXTENSION IN VSCODE
+
+### delete all users
+DELETE http://localhost:8080/delete-all-users
+
+### get own data
+GET http://localhost:8080/get-all-users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiamF5IiwiaWF0IjoxNjY2NzQzMjExfQ.v0Se-QGfk7F6N6q6qQHKfQCQd8GJkflTaWVGpOvZNZQ
+
+
+### get all users
+GET http://localhost:8080/get-all-users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiamF5IiwiaWF0IjoxNjY2NzQzMjExfQ.v0Se-QGfk7F6N6q6qQHKfQCQd8GJkflTaWVGpOvZNZQ
+
+
+### login with specified credentials
+POST http://localhost:8080/users/login HTTP/1.1
+content-type: application/json
+
+{
+  "username": "jay",
+  "password": "jay"
+}
+
+### register with specified credentials
+POST http://localhost:8080/add-user HTTP/1.1
+content-type: application/json
+
+{
+  "firstName": "jay2",
+  "lastName": "jay2",
+  "username": "jay2",
+  "email": "jay2",
+  "password": "jay2"
+}

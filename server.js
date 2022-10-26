@@ -8,13 +8,16 @@ const User = require('./models/user');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const bcryptjs = require('bcryptjs');
-const bcrypt = require('bcryptjs/dist/bcrypt');
+const jwt = require('jsonwebtoken');
 
 //handles cors
 app.use(cors());
 
 //handles json body parsing for post requests
 app.use(bodyParser.json());
+
+// since we're passing json to our endpoints, we need to do this
+app.use(express.json());
 
 // Connect to MongoDB
 mongoose
@@ -29,6 +32,34 @@ mongoose
     });
   })
   .catch((err) => console.log(err));
+
+// const authenticateToken = (req, res, next) => {
+//   const authHeader = req.headers['authorization'];
+//   console.log(authHeader);
+
+//   // Bearer TOKEN (taking this TOKEN)
+//   const token = authHeader && authHeader.split(' ')[1];
+//   console.log(token);
+
+// };
+
+app.post('/auth/verify-jwt', async (req, res) => {
+  console.log(req.body, 'verify-jwt endpoint');
+
+  const token = req.body.accessToken;
+  if (token == null) {
+    console.log('ending authenticateToken');
+    return res.status(401).send();
+  }
+
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).send();
+    }
+    console.log('got hereeeee');
+    res.status(200).json(user);
+  });
+});
 
 app.post('/add-user', async (req, res) => {
   try {
@@ -49,9 +80,17 @@ app.post('/add-user', async (req, res) => {
   }
 });
 
-app.get('/get-users', async (req, res) => {
+app.get('/get-own-data', async (req, res) => {
+  console.log('get own data endpoint hit');
+  // console.log(req.body); // GET methods don't have a body
+
+  const users = await User.find({ username: '123' }); //TODO: need to make this dynamic
+  console.log(users, 'get-own-data endpoint');
+});
+
+app.get('/get-all-users', async (req, res) => {
   const users = await User.find({});
-  console.log(users, 'displaying users from the server-database');
+  console.log(users, 'get-allusers endpoint');
 });
 
 app.delete('/delete-all-users', async (req, res) => {
@@ -69,16 +108,21 @@ app.post('/users/login', async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
 
-  const user = await User.find({ username: { $in: username } });
+  const userToFind = await User.find({ username: { $in: username } });
 
-  if (user === null) {
+  if (userToFind === null) {
     res.status(401).send();
   }
-  console.log(user[0].email);
+  console.log(userToFind[0].email);
 
   try {
-    if (await bcryptjs.compare(password, user[0].password)) {
-      res.status(200).send('success login!');
+    if (await bcryptjs.compare(password, userToFind[0].password)) {
+      //JWT
+      const user = { name: username };
+      const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+      res
+        .status(200)
+        .json({ accessToken: accessToken, message: 'login success!' });
     } else {
       res.status(401).send();
     }
