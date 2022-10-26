@@ -90,7 +90,14 @@ app.get('/get-own-data', async (req, res) => {
 
 app.get('/get-all-users', async (req, res) => {
   const users = await User.find({});
-  console.log(users, 'get-allusers endpoint');
+  console.log(users, 'get-allUsers endpoint');
+  res.status(200).json(users);
+});
+
+app.get('/users/:username', async (req, res) => {
+  const user = await User.find({ username: req.params.username });
+  console.log(user);
+  res.status(200).json(user);
 });
 
 app.delete('/delete-all-users', async (req, res) => {
