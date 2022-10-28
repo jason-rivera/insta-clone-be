@@ -52,16 +52,16 @@ app.post('/auth/verify-jwt', async (req, res) => {
     return res.status(401).send();
   }
 
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decodedUser) => {
     if (err) {
       return res.status(403).send();
     }
     console.log('got hereeeee');
-    res.status(200).json(user);
+    res.status(200).json(decodedUser);
   });
 });
 
-app.post('/add-user', async (req, res) => {
+app.post('/register', async (req, res) => {
   try {
     const hashedPassword = await bcryptjs.hash(req.body.password, 10);
     const newUser = await new User({
@@ -112,24 +112,32 @@ app.delete('/delete-all-users', async (req, res) => {
 });
 
 app.post('/users/login', async (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
+  const user = await User.find({ username: { $in: req.body.username } });
 
-  const userToFind = await User.find({ username: { $in: username } });
-
-  if (userToFind === null) {
+  if (user === null) {
     res.status(401).send();
   }
-  console.log(userToFind[0].email);
+  console.log(user[0].email);
 
   try {
-    if (await bcryptjs.compare(password, userToFind[0].password)) {
+    if (await bcryptjs.compare(req.body.password, user[0].password)) {
       //JWT
-      const user = { name: username };
-      const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+
+      const accessToken = jwt.sign(
+        {
+          id: user._id,
+          isAdmin: false,
+        },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: '1m' }
+      );
       res
         .status(200)
-        .json({ accessToken: accessToken, message: 'login success!' });
+        .json({
+          accessToken: accessToken,
+          message: 'login success!',
+          userToken: user,
+        });
     } else {
       res.status(401).send();
     }
