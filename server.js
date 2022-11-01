@@ -128,16 +128,14 @@ app.post('/users/login', async (req, res) => {
           id: user._id,
           isAdmin: false,
         },
-        process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '1m' }
+        process.env.ACCESS_TOKEN_SECRET
+        // { expiresIn: '1m' }
       );
-      res
-        .status(200)
-        .json({
-          accessToken: accessToken,
-          message: 'login success!',
-          userToken: user,
-        });
+      res.status(200).json({
+        accessToken: accessToken,
+        message: 'login success!',
+        userToken: user,
+      });
     } else {
       res.status(401).send();
     }
