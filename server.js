@@ -5,6 +5,7 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 const mongoose = require('mongoose');
 const User = require('./models/user');
+const Tweet = require('./models/tweet');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const bcryptjs = require('bcryptjs');
@@ -141,5 +142,18 @@ app.post('/users/login', async (req, res) => {
     }
   } catch {
     res.status(500).send();
+  }
+});
+
+app.post('/tweet', async (req, res) => {
+  console.log('got tweeted');
+  try {
+    // const newTweet = await new User({
+    //   tweet: req.body.tweet,
+    // });
+    // const savedTweet = await newTweet.save();
+    // res.status(200).json(savedTweet);
+  } catch (err) {
+    console.log(err);
   }
 });
