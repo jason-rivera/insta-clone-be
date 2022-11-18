@@ -128,7 +128,6 @@ app.post('/users/login', async (req, res) => {
   if (user === null) {
     res.status(401).send();
   }
-  console.log(user[0].email);
 
   try {
     if (await bcryptjs.compare(req.body.password, user[0].password)) {
@@ -198,10 +197,20 @@ app.get('/tweets', async (req, res) => {
 
 app.patch('/profile/update', async (req, res) => {
   try {
-    console.log(req.body.id);
-    const user = await User.find({ _id: req.body.id });
+    console.log(req.body);
+    const user = await User.findOneAndUpdate(
+      { _id: req.body.id },
+      {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        username: req.body.username,
+        email: req.body.email,
+      }
+    );
 
-    console.log('userrrr', user);
+    const returnUser = await User.find({ _id: req.body.id });
+
+    res.status(200).json(returnUser);
   } catch (e) {
     console.error(e);
     res.status(500).send();
