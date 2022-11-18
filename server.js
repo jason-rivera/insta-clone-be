@@ -95,10 +95,20 @@ app.get('/get-all-users', async (req, res) => {
   res.status(200).json(users);
 });
 
-app.get('/users/:username', async (req, res) => {
+app.get('/users/username/:username', async (req, res) => {
   const user = await User.find({ username: req.params.username });
   console.log(user);
   res.status(200).json(user);
+});
+
+app.get('/users/id/:id', async (req, res) => {
+  try {
+    const user = await User.find({ _id: req.params.id });
+    res.status(200).json(user);
+  } catch (e) {
+    console.error(e);
+    res.status(500).send(e);
+  }
 });
 
 app.delete('/delete-all-users', async (req, res) => {
@@ -180,6 +190,18 @@ app.get('/tweets', async (req, res) => {
     console.log('tweets');
     const allTweets = await Tweet.find();
     res.status(200).json(allTweets);
+  } catch (e) {
+    console.error(e);
+    res.status(500).send();
+  }
+});
+
+app.patch('/profile/update', async (req, res) => {
+  try {
+    console.log(req.body.id);
+    const user = await User.find({ _id: req.body.id });
+
+    console.log('userrrr', user);
   } catch (e) {
     console.error(e);
     res.status(500).send();
