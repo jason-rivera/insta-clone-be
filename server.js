@@ -10,15 +10,24 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const verifyJWT = require('./middleware/verifyJWT');
+const cookieParser = require('cookie-parser');
 
 //handles cors
-app.use(cors());
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+  })
+);
 
 //handles json body parsing for post requests
 app.use(bodyParser.json());
 
 // since we're passing json to our endpoints, we need to do this
 app.use(express.json());
+
+//let's you use the cookieParser in your application
+app.use(cookieParser());
 
 // Connect to MongoDB
 mongoose
@@ -44,23 +53,26 @@ mongoose
 
 // };
 
-app.post('/auth/verify-jwt', async (req, res) => {
-  console.log(req.body, 'verify-jwt endpoint');
+// const verifyJWT = async (req, res) => {
+//   const response = await app.post('/auth/verify-jwt', async (req, res) => {
+//     console.log(req.body, 'verify-jwt endpoint');
 
-  const token = req.body.accessToken;
-  if (token == null) {
-    console.log('ending authenticateToken');
-    return res.status(401).send();
-  }
+//     const token = req.body.accessToken;
+//     if (token == null) {
+//       return res.status(401).json({ message: 'currently no token' });
+//     }
 
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decodedUser) => {
-    if (err) {
-      return res.status(403).send();
-    }
-    console.log('got hereeeee');
-    res.status(200).json(decodedUser);
-  });
-});
+//     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decodedUser) => {
+//       if (err) {
+//         return res.status(403).json({ message: `${err}` });
+//       }
+//       console.log('verified');
+//       return res.status(200).json(decodedUser);
+//     });
+//   });
+
+//   return response;
+// };
 
 app.post('/register', async (req, res) => {
   try {
@@ -81,24 +93,10 @@ app.post('/register', async (req, res) => {
   }
 });
 
-app.get('/get-own-data', async (req, res) => {
-  console.log('get own data endpoint hit');
-  // console.log(req.body); // GET methods don't have a body
-
-  const users = await User.find({ username: '123' }); //TODO: need to make this dynamic
-  console.log(users, 'get-own-data endpoint');
-});
-
 app.get('/get-all-users', async (req, res) => {
   const users = await User.find({});
   console.log(users, 'get-allUsers endpoint');
   res.status(200).json(users);
-});
-
-app.get('/users/username/:username', async (req, res) => {
-  const user = await User.find({ username: req.params.username });
-  console.log(user);
-  res.status(200).json(user);
 });
 
 app.get('/users/id/:id', async (req, res) => {
@@ -130,28 +128,51 @@ app.post('/users/login', async (req, res) => {
   }
 
   try {
-    if (await bcryptjs.compare(req.body.password, user[0].password)) {
+    const match = await bcryptjs.compare(req.body.password, user[0].password);
+    if (match) {
       //JWT
+      const payload = {
+        id: user[0]._id.toString(),
+        username: user[0].username,
+      };
+      const jwtToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
+        noTimestamp: true,
+        expiresIn: '30s',
+      });
 
-      const accessToken = jwt.sign(
-        {
-          id: user._id,
-          isAdmin: false,
-        },
-        process.env.ACCESS_TOKEN_SECRET
-        // { expiresIn: '1m' }
-      );
+      res.cookie('jwt', jwtToken, {
+        secure: false,
+        httpOnly: true,
+      });
+
       res.status(200).json({
-        accessToken: accessToken,
-        message: 'login success!',
-        userToken: user,
+        accessToken: jwtToken,
+        success: `User ${user[0].username} is logged in!`,
       });
     } else {
-      res.status(401).send();
+      res.status(401).json({
+        message: 'incorrect password',
+      });
     }
   } catch {
     res.status(500).send();
   }
+});
+
+//----------------------------------
+app.use(verifyJWT);
+//---------------------------------- anything below this will use verifyJWT middleware
+
+app.post('/users/username/:username', async (req, res) => {
+  const user = await User.find({ username: req.params.username });
+
+  console.log(user);
+  res.status(200).json(user);
+});
+
+app.post('/get-own-data', async (req, res) => {
+  const user = await User.find({ username: req.user });
+  res.status(200).json(user);
 });
 
 app.post('/tweet', async (req, res) => {
