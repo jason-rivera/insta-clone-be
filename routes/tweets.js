@@ -32,7 +32,7 @@ router.delete('/delete-all', async (req, res) => {
   }
 });
 
-router.get('/tweets', async (req, res) => {
+router.get('/get-all-tweets', async (req, res) => {
   try {
     console.log('tweets');
     const allTweets = await Tweet.find();

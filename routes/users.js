@@ -9,7 +9,6 @@ router.get('/username/:username', async (req, res) => {
 });
 
 router.post('/get-own-data', async (req, res) => {
-  console.log('got to get own data endpoint');
   const user = await User.find({ username: req.user });
   res.status(200).json(user);
 });
@@ -36,7 +35,6 @@ router.get('/id/:id', async (req, res) => {
 });
 
 router.get('/get-all-users', async (req, res) => {
-  console.log('get all users endpoint hit');
   const users = await User.find({});
   console.log(users, 'get-allUsers endpoint');
   res.status(200).json(users);
