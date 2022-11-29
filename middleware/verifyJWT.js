@@ -2,9 +2,9 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const verifyJWT = (req, res, next) => {
-  console.log('verifying the JWT with the middleware');
   const authHeader = req.headers['authorization'];
   if (!authHeader) {
+    console.log('verification: 401 unauthorized');
     return res.sendStatus(401); //unauthorized
   }
   // console.log(authHeader); // Bearer token
@@ -16,6 +16,7 @@ const verifyJWT = (req, res, next) => {
     // console.log(decoded, 'this is decoded');
     req.user = decoded.username;
     console.log(req.user, 'decoded user');
+    console.log('verification: granted');
     next();
   });
 };
