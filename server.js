@@ -1,6 +1,7 @@
 const dotenv = require('dotenv').config();
 // const dotenv = require('dotenv').config({ path: './.env' });
 const express = require('express');
+const router = express.Router();
 const app = express();
 const PORT = process.env.PORT || 8080;
 const mongoose = require('mongoose');
@@ -28,6 +29,9 @@ app.use(express.json());
 
 //let's you use the cookieParser in your application
 app.use(cookieParser());
+
+// routes
+// app.use('/users', require('./routes/users'));
 
 // Connect to MongoDB
 mongoose
@@ -93,12 +97,6 @@ app.post('/register', async (req, res) => {
   }
 });
 
-app.get('/get-all-users', async (req, res) => {
-  const users = await User.find({});
-  console.log(users, 'get-allUsers endpoint');
-  res.status(200).json(users);
-});
-
 app.get('/users/id/:id', async (req, res) => {
   try {
     const user = await User.find({ _id: req.params.id });
@@ -123,6 +121,9 @@ app.delete('/delete-all-users', async (req, res) => {
 app.post('/users/login', async (req, res) => {
   const user = await User.find({ username: { $in: req.body.username } });
 
+  const username = user[0].username;
+  console.log(username, 'login endpoint look here');
+
   if (user === null) {
     res.status(401).send();
   }
@@ -140,14 +141,15 @@ app.post('/users/login', async (req, res) => {
         expiresIn: '30s',
       });
 
-      res.cookie('jwt', jwtToken, {
-        secure: false,
-        httpOnly: true,
-      });
+      // res.cookie('jwt', jwtToken, {
+      //   secure: false,
+      //   httpOnly: true,
+      // });
 
       res.status(200).json({
         accessToken: jwtToken,
-        success: `User ${user[0].username} is logged in!`,
+        userToken: username,
+        success: `User ${user.username} is logged in!`,
       });
     } else {
       res.status(401).json({
@@ -163,7 +165,15 @@ app.post('/users/login', async (req, res) => {
 app.use(verifyJWT);
 //---------------------------------- anything below this will use verifyJWT middleware
 
-app.post('/users/username/:username', async (req, res) => {
+// router.use('/user', require('./routes/users'));
+
+app.get('/get-all-users', async (req, res) => {
+  const users = await User.find({});
+  console.log(users, 'get-allUsers endpoint');
+  res.status(200).json(users);
+});
+
+app.get('/users/username/:username', async (req, res) => {
   const user = await User.find({ username: req.params.username });
 
   console.log(user);
