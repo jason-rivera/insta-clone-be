@@ -7,10 +7,10 @@ const User = require('../models/user');
 // logs in a user
 router.post('/login', async (req, res) => {
   const user = await User.find({ username: { $in: req.body.username } });
-  console.log(user);
+  // console.log(user);
 
   const username = user[0].username;
-  console.log(username, 'login endpoint look here');
+  // console.log(username, 'login endpoint look here');
 
   if (user === null) {
     res.status(401).send();
