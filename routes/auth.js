@@ -7,10 +7,7 @@ const User = require('../models/user');
 // logs in a user
 router.post('/login', async (req, res) => {
   const user = await User.find({ username: { $in: req.body.username } });
-  // console.log(user);
-
   const username = user[0].username;
-  // console.log(username, 'login endpoint look here');
 
   if (user === null) {
     res.status(401).send();
@@ -22,17 +19,12 @@ router.post('/login', async (req, res) => {
       //JWT
       const payload = {
         id: user[0]._id.toString(),
-        username: user[0].username,
+        // username: user[0].username,
       };
       const jwtToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
         noTimestamp: true,
         expiresIn: '640s',
       });
-
-      // res.cookie('jwt', jwtToken, {
-      //   secure: false,
-      //   httpOnly: true,
-      // });
 
       res.status(200).json({
         accessToken: jwtToken,

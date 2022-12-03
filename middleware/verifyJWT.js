@@ -14,8 +14,8 @@ const verifyJWT = (req, res, next) => {
       return res.sendStatus(403); //forbidden
     }
     // console.log(decoded, 'this is decoded');
-    req.user = decoded.username;
-    console.log(req.user, 'decoded user');
+    req.id = decoded.id;
+    console.log(req.id, 'decoded user ID');
     console.log('verification: granted');
     next();
   });

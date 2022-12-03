@@ -13,6 +13,7 @@ router.post('/new', async (req, res) => {
       username: req.body.username,
       email: req.body.email,
       password: hashedPassword,
+      isAdmin: false,
     });
     const savedUser = await newUser.save();
     res.status(200).json(savedUser);
