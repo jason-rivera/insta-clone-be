@@ -7,11 +7,13 @@ const User = require('../models/user');
 // logs in a user
 router.post('/login', async (req, res) => {
   const user = await User.find({ username: { $in: req.body.username } });
-  const username = user[0].username;
 
-  if (user === null) {
+  if (user.length === 0) {
     res.status(401).send();
+    return;
   }
+
+  const username = user[0].username;
 
   try {
     const match = await bcryptjs.compare(req.body.password, user[0].password);
