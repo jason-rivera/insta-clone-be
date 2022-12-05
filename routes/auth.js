@@ -23,7 +23,7 @@ router.post('/login', async (req, res) => {
       };
       const jwtToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
         noTimestamp: true,
-        expiresIn: '640s',
+        expiresIn: '1280s',
       });
 
       res.status(200).json({

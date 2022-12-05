@@ -43,4 +43,15 @@ router.get('/get-all-tweets', async (req, res) => {
   }
 });
 
+router.get('/:username', async (req, res) => {
+  try {
+    console.log(`tweets by ${req.params.username}`);
+    const userTweets = await Tweet.find({ username: req.params.username });
+    res.status(200).json(userTweets);
+  } catch (e) {
+    console.error(e);
+    res.status(500).send();
+  }
+});
+
 module.exports = router;
