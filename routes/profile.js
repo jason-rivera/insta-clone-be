@@ -13,6 +13,7 @@ router.patch('/update', async (req, res) => {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
+      avatar: req.body.avatar,
     };
 
     let response = await User.findOneAndUpdate(filter, update);
