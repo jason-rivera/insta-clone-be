@@ -17,12 +17,7 @@ const jwt = require('jsonwebtoken');
 const API_V1 = '/api/v1';
 
 // handles cors
-app.use(
-  cors({
-    // origin: 'http://localhost:3000',
-    origin: 'https://git.heroku.com/twitter-clone-backend-app.git',
-  })
-);
+app.use(cors());
 
 // handles json body parsing for post requests
 app.use(bodyParser.json());
