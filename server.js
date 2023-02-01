@@ -19,7 +19,9 @@ const API_V1 = '/api/v1';
 // handles cors
 app.use(
   cors({
-    origin: 'https://jason-rivera.github.io',
+    // origin: 'http://localhost:3000',
+    // origin: 'https://jason-rivera.github.io',
+    origin: 'http://thephotobiography.com',
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   })
