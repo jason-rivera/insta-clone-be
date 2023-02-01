@@ -21,7 +21,8 @@ app.use(
   cors({
     // origin: 'http://localhost:3000',
     // origin: 'https://jason-rivera.github.io',
-    origin: 'http://thephotobiography.com',
+    // origin: 'http://thephotobiography.com',
+    origin: 'https://insta-clone-fe.herokuapp.com',
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   })
