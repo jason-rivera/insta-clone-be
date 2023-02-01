@@ -17,7 +17,14 @@ const jwt = require('jsonwebtoken');
 const API_V1 = '/api/v1';
 
 // handles cors
-app.use(cors());
+app.use(
+  cors({
+    // origin: 'http://localhost:3000',
+    origin: 'https://jason-rivera.github.io',
+  })
+);
+
+app.options('*', cors()); // include before other routes
 
 // handles json body parsing for post requests
 app.use(bodyParser.json());
