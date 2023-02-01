@@ -19,12 +19,10 @@ const API_V1 = '/api/v1';
 // handles cors
 app.use(
   cors({
-    // origin: 'http://localhost:3000',
-    // origin: 'https://jason-rivera.github.io',
-    // origin: 'http://thephotobiography.com',
-    origin: 'https://insta-clone-fe.herokuapp.com',
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   })
 );
 
