@@ -20,7 +20,7 @@ const API_V1 = '/api/v1';
 app.use(
   cors({
     // origin: 'http://localhost:3000',
-    origin: 'https://jason-rivera.github.io',
+    origin: 'https://git.heroku.com/twitter-clone-backend-app.git',
   })
 );
 
