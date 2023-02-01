@@ -19,7 +19,8 @@ const API_V1 = '/api/v1';
 // handles cors
 app.use(
   cors({
-    origin: 'http://localhost:3000',
+    // origin: 'http://localhost:3000',
+    origin: 'https://jason-rivera.github.io/insta-clone-fe',
   })
 );
 
