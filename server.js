@@ -49,7 +49,7 @@ app.use(API_V1 + '/register', require('./routes/register'));
 app.use(API_V1 + '/auth', require('./routes/auth'));
 
 //-----------------------
-app.use(verifyJWT); // anything below this will use verifyJWT middleware
+// app.use(verifyJWT); // anything below this will use verifyJWT middleware
 //-----------------------
 
 app.use(API_V1 + '/users', require('./routes/users'));
