@@ -17,7 +17,18 @@ const jwt = require('jsonwebtoken');
 const API_V1 = '/api/v1';
 
 // handles cors
-app.use(cors({ credentials: true, origin: true }));
+app.use(
+  cors({
+    // origin: 'http://localhost:3000',
+    // origin: 'https://jason-rivera.github.io',
+    // origin: 'http://thephotobiography.com',
+    // origin: 'https://insta-clone-fe.herokuapp.com',
+    origin: '*',
+    // methods: ['GET', 'POST'],
+    // allowedHeaders: ['Content-Type', 'Authorization'],
+    // credentials: true,
+  })
+);
 
 app.options('*', cors()); // include before other routes
 
@@ -49,7 +60,7 @@ app.use(API_V1 + '/register', require('./routes/register'));
 app.use(API_V1 + '/auth', require('./routes/auth'));
 
 //-----------------------
-// app.use(verifyJWT); // anything below this will use verifyJWT middleware
+app.use(verifyJWT); // anything below this will use verifyJWT middleware
 //-----------------------
 
 app.use(API_V1 + '/users', require('./routes/users'));
