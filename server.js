@@ -71,3 +71,7 @@ app.use(API_V1 + '/users', require('./routes/users'));
 app.use(API_V1 + '/tweets', require('./routes/tweets'));
 app.use(API_V1 + '/profile', require('./routes/profile'));
 app.use(API_V1 + '/verify', require('./routes/verify'));
+
+app.listen(PORT, () => {
+  console.log('Server listening on http://localhost:' + PORT);
+});
