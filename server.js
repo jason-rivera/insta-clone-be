@@ -42,18 +42,18 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Connect to MongoDB
-// mongoose
-//   .connect(process.env.MONGO_URL, {
-//     useUnifiedTopology: true,
-//     useNewUrlParser: true,
-//   })
-//   .then((result) => {
-//     console.log('Connected to DB');
-//     app.listen(PORT, () => {
-//       console.log(`Listening at: http://localhost:${PORT}`);
-//     });
-//   })
-//   .catch((err) => console.log(err));
+mongoose
+  .connect(process.env.MONGO_URL, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+  })
+  .then((result) => {
+    console.log('Connected to DB');
+    app.listen(PORT, () => {
+      console.log(`Listening at: http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => console.log(err));
 
 app.get(API_V1 + '/ping', async (req, res) => {
   res.status(200).send({ message: 'pong' });
