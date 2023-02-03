@@ -55,6 +55,14 @@ mongoose
   })
   .catch((err) => console.log(err));
 
+
+
+app.get(API_V1 + "/ping", async (req, res) => {
+  res.status(200).send({message: "pong"});
+})
+
+
+
 // These routes won't use verifyJWT middleware
 app.use(API_V1 + '/register', require('./routes/register'));
 app.use(API_V1 + '/auth', require('./routes/auth'));
