@@ -17,18 +17,18 @@ const jwt = require('jsonwebtoken');
 const API_V1 = '/api/v1';
 
 // handles cors
-// app.use(
-//   cors({
-//     // origin: 'http://localhost:3000',
-//     // origin: 'https://jason-rivera.github.io',
-//     // origin: 'http://thephotobiography.com',
-//     // origin: 'https://insta-clone-fe.herokuapp.com',
-//     origin: '*',
-//     // methods: ['GET', 'POST'],
-//     // allowedHeaders: ['Content-Type', 'Authorization'],
-//     // credentials: true,
-//   })
-// );
+app.use(
+  cors({
+    // origin: 'http://localhost:3000',
+    // origin: 'https://jason-rivera.github.io',
+    // origin: 'http://thephotobiography.com',
+    // origin: 'https://insta-clone-fe.herokuapp.com',
+    origin: '*',
+    // methods: ['GET', 'POST'],
+    // allowedHeaders: ['Content-Type', 'Authorization'],
+    // credentials: true,
+  })
+);
 
 // app.options('*', cors()); // include before other routes
 
@@ -72,6 +72,6 @@ app.use(API_V1 + '/tweets', require('./routes/tweets'));
 app.use(API_V1 + '/profile', require('./routes/profile'));
 app.use(API_V1 + '/verify', require('./routes/verify'));
 
-app.listen(PORT, () => {
-  console.log('Server listening on http://localhost:' + PORT);
-});
+// app.listen(PORT, () => {
+//   console.log('Server listening on http://localhost:' + PORT);
+// });
